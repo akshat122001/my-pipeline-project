@@ -9,12 +9,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Create target folder
+    - name: Create target directory
       run: mkdir cloned_content
       
-    - name: Copy files (excluding target folder)
+    - name: Copy files safely
       run: |
-        robocopy . cloned_content /E /XD .github cloned_content /NFL /NDL /NJH /NJS /nc /ns /np
+        $files = Get-ChildItem -Path . -Exclude @('.github', 'cloned_content')
+        foreach ($file in $files) {
+          Copy-Item -Path $file.FullName -Destination "cloned_content\" -Recurse -Force
+        }
         
-    - name: List copied files
+    - name: Verify copy
       run: dir cloned_content
