@@ -8,6 +8,13 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir cloned_content
-    - run: xcopy /E /I * cloned_content\
-    - run: dir cloned_content 
+    
+    - name: Create target folder
+      run: mkdir cloned_content
+      
+    - name: Copy files (excluding target folder)
+      run: |
+        robocopy . cloned_content /E /XD .github cloned_content /NFL /NDL /NJH /NJS /nc /ns /np
+        
+    - name: List copied files
+      run: dir cloned_content
